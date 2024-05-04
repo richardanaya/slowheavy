@@ -34,6 +34,10 @@ export default () => {
   useEffect(() => {
     if (isPullDownRunning) {
       const interval = setInterval(() => {
+        // if over 2 min 30 sec, stop
+        if (pullDownTime >= 150) {
+          setIsPullDownRunning(false);
+        }
         setPullDownTime(pullDownTime + 1);
       }, 1000);
       return () => clearInterval(interval);
@@ -43,6 +47,9 @@ export default () => {
   useEffect(() => {
     if (isChestPressRunning) {
       const interval = setInterval(() => {
+        if (chestPressTime >= 150) {
+          setIsChestPressRunning(false);
+        }
         setChestPressTime(chestPressTime + 1);
       }, 1000);
       return () => clearInterval(interval);
@@ -52,6 +59,9 @@ export default () => {
   useEffect(() => {
     if (isLegPressRunning) {
       const interval = setInterval(() => {
+        if (legPressTime >= 150) {
+          setIsLegPressRunning(false);
+        }
         setLegPressTime(legPressTime + 1);
       }, 1000);
       return () => clearInterval(interval);
