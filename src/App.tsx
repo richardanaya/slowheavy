@@ -10,6 +10,28 @@ import {
   Chip,
 } from "framework7-react";
 
+function calculateScore(entry: any) {
+  return Math.round(
+    (entry.pullDown.weight * entry.pullDown.time +
+      entry.chestPress.weight * entry.chestPress.time +
+      entry.legPress.weight * entry.legPress.time +
+      entry.seatedRow.weight * entry.seatedRow.time +
+      entry.overheadPress.weight * entry.overheadPress.time -
+      (entry.totalGymTime -
+        entry.pullDown.time -
+        entry.chestPress.time -
+        entry.legPress.time -
+        entry.seatedRow.time -
+        entry.overheadPress.time)) /
+      1000
+  );
+}
+
+function localStorageGetOr(key: string, defaultValue: any) {
+  const keyValue = localStorage.getItem(key);
+  return keyValue ? JSON.parse(keyValue) : defaultValue;
+}
+
 export default () => {
   // lets make an exercise tracker that tracks the number of seconds we do an exercise at a certain weight
 
@@ -17,11 +39,21 @@ export default () => {
     JSON.parse(localStorage.getItem("exercise_log") || "[]") || []
   );
 
-  const [pullDownWeight, setPullDownWeight] = useState(0);
-  const [chestPressWeight, setChestPressWeight] = useState(0);
-  const [legPressWeight, setLegPressWeight] = useState(0);
-  const [seatedRowWeight, setSeatedRowWeight] = useState(0);
-  const [overheadPressWeight, setOverheadPressWeight] = useState(0);
+  const [pullDownWeight, setPullDownWeight] = useState(
+    localStorageGetOr("last_pull_down_weight", 100)
+  );
+  const [chestPressWeight, setChestPressWeight] = useState(
+    localStorageGetOr("last_chest_press_weight", 100)
+  );
+  const [legPressWeight, setLegPressWeight] = useState(
+    localStorageGetOr("last_leg_press_weight", 100)
+  );
+  const [seatedRowWeight, setSeatedRowWeight] = useState(
+    localStorageGetOr("last_seated_row_weight", 100)
+  );
+  const [overheadPressWeight, setOverheadPressWeight] = useState(
+    localStorageGetOr("last_overhead_press_weight", 100)
+  );
 
   const [gymStartTime, setGymStartTime] = useState<Date | undefined>(undefined);
   const [pullDownTime, setPullDownTime] = useState(0);
@@ -36,11 +68,51 @@ export default () => {
   const [isSeatedRowRunning, setIsSeatedRowRunning] = useState(false);
   const [isOverheadPressRunning, setIsOverheadPressRunning] = useState(false);
 
+  const [pullDownReps, setPullDownReps] = useState(
+    localStorageGetOr("last_pull_down_reps", 4)
+  );
+  const [chestPressReps, setChestPressReps] = useState(
+    localStorageGetOr("last_chest_press_reps", 4)
+  );
+  const [legPressReps, setLegPressReps] = useState(
+    localStorageGetOr("last_leg_press_reps", 4)
+  );
+  const [seatedRowReps, setSeatedRowReps] = useState(
+    localStorageGetOr("last_seated_row_reps", 4)
+  );
+  const [overheadPressReps, setOverheadPressReps] = useState(
+    localStorageGetOr("last_overhead_press_reps", 4)
+  );
+
   const formatSeconds = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes} min ${remainingSeconds} sec`;
   };
+
+  useEffect(() => {
+    localStorage.setItem("last_pull_down_weight", pullDownWeight);
+    localStorage.setItem("last_chest_press_weight", chestPressWeight);
+    localStorage.setItem("last_leg_press_weight", legPressWeight);
+    localStorage.setItem("last_seated_row_weight", seatedRowWeight);
+    localStorage.setItem("last_overhead_press_weight", overheadPressWeight);
+    localStorage.setItem("last_pull_down_reps", pullDownReps);
+    localStorage.setItem("last_chest_press_reps", chestPressReps);
+    localStorage.setItem("last_leg_press_reps", legPressReps);
+    localStorage.setItem("last_seated_row_reps", seatedRowReps);
+    localStorage.setItem("last_overhead_press_reps", overheadPressReps);
+  }, [
+    pullDownWeight,
+    chestPressWeight,
+    legPressWeight,
+    seatedRowWeight,
+    overheadPressWeight,
+    pullDownReps,
+    chestPressReps,
+    legPressReps,
+    seatedRowReps,
+    overheadPressReps,
+  ]);
 
   useEffect(() => {
     if (isPullDownRunning) {
@@ -116,219 +188,362 @@ export default () => {
     seatedRowWeight * seatedRowTime +
     overheadPressWeight * overheadPressTime;
 
+  const end = new Date();
+  const currentEntry = gymStartTime
+    ? {
+        time: new Date().toISOString(),
+        totalGymTime: end.getTime() / 1000 - gymStartTime.getTime() / 1000,
+        pullDown: {
+          weight: pullDownWeight,
+          reps: pullDownReps,
+          time: pullDownTime,
+        },
+        chestPress: {
+          weight: chestPressWeight,
+          reps: chestPressReps,
+          time: chestPressTime,
+        },
+        legPress: {
+          weight: legPressWeight,
+          reps: legPressReps,
+          time: legPressTime,
+        },
+        seatedRow: {
+          weight: seatedRowWeight,
+          reps: seatedRowReps,
+          time: seatedRowTime,
+        },
+        overheadPress: {
+          weight: overheadPressWeight,
+          reps: overheadPressReps,
+          time: overheadPressTime,
+        },
+      }
+    : undefined;
+
+  const isCurrentlyExercising =
+    isPullDownRunning ||
+    isChestPressRunning ||
+    isLegPressRunning ||
+    isSeatedRowRunning ||
+    isOverheadPressRunning;
+
   return (
     <App>
       <Page>
         <Navbar title="Slow Heavy" />
         <Block strong outlineIos>
           <Button
-            raised
             fill
             round
             onClick={() => {
               if (gymStartTime === undefined) {
                 setGymStartTime(new Date());
               } else {
-                const end = new Date();
-                const entry = {
-                  time: new Date().toISOString(),
-                  totalGymTime:
-                    end.getTime() / 1000 - gymStartTime.getTime() / 1000,
-                  pullDown: { weight: pullDownWeight, time: pullDownTime },
-                  chestPress: {
-                    weight: chestPressWeight,
-                    time: chestPressTime,
-                  },
-                  legPress: { weight: legPressWeight, time: legPressTime },
-                  seatedRow: { weight: seatedRowWeight, time: seatedRowTime },
-                  overheadPress: {
-                    weight: overheadPressWeight,
-                    time: overheadPressTime,
-                  },
-                };
-
-                // save to exercise_log array in localStorage
-                const exerciseLog = JSON.parse(
-                  localStorage.getItem("exercise_log") || "[]"
-                );
-                exerciseLog.push(entry);
-                localStorage.setItem(
-                  "exercise_log",
-                  JSON.stringify(exerciseLog)
-                );
-                setLog(exerciseLog);
-                setGymStartTime(undefined);
+                if (currentEntry) {
+                  // save to exercise_log array in localStorage
+                  const exerciseLog = JSON.parse(
+                    localStorage.getItem("exercise_log") || "[]"
+                  );
+                  exerciseLog.push(currentEntry);
+                  localStorage.setItem(
+                    "exercise_log",
+                    JSON.stringify(exerciseLog)
+                  );
+                  setLog(exerciseLog);
+                  setGymStartTime(undefined);
+                }
               }
             }}
+            disabled={isCurrentlyExercising}
           >
-            {gymStartTime !== undefined ? "End Workout" : "Start Workout"}
+            {gymStartTime !== undefined
+              ? `End Workout${
+                  currentEntry
+                    ? ` - Current Score ${calculateScore(currentEntry)}`
+                    : ""
+                }`
+              : "Start Workout"}
           </Button>
         </Block>
-        <BlockTitle>Pulldown</BlockTitle>
-        <Block strong outlineIos>
+
+        <BlockTitle>Workout</BlockTitle>
+        <Block strong outlineIos className="text-align-center">
           <div className="grid grid-cols-3 grid-gap">
-            <Button
-              raised
-              fill
-              round
-              onClick={() => {
-                if (pullDownTime > 0 && !isPullDownRunning) {
-                  setPullDownTime(0);
-                } else {
-                  setIsPullDownRunning(!isPullDownRunning);
+            <div>
+              <small className="display-block">
+                <b>Pulldown</b>
+              </small>
+              <Button
+                fill={pullDownTime !== 0 && !isPullDownRunning}
+                outline={pullDownTime === 0 || isPullDownRunning}
+                round
+                onClick={() => {
+                  if (pullDownTime > 0 && !isPullDownRunning) {
+                    setPullDownTime(0);
+                  } else {
+                    setIsPullDownRunning(!isPullDownRunning);
+                  }
+                }}
+                disabled={
+                  gymStartTime === undefined ||
+                  (!isPullDownRunning && isCurrentlyExercising)
                 }
-              }}
-            >
-              {pullDownTime > 0 && !isPullDownRunning
-                ? "Reset"
-                : isPullDownRunning
-                ? "Stop"
-                : "Start"}
-            </Button>
-            <Stepper
-              onStepperPlusClick={() => {
-                setPullDownWeight(pullDownWeight + 5);
-              }}
-              onStepperMinusClick={() => {
-                setPullDownWeight(pullDownWeight - 5);
-              }}
-              value={pullDownWeight}
-            />
-            <Chip outline text={formatSeconds(pullDownTime)} />
+              >
+                {pullDownTime > 0 && !isPullDownRunning
+                  ? formatSeconds(pullDownTime)
+                  : isPullDownRunning
+                  ? formatSeconds(pullDownTime)
+                  : "Start"}
+              </Button>
+            </div>
+            <div>
+              <small className="display-block">Weight</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setPullDownWeight(pullDownWeight + 5);
+                }}
+                onStepperMinusClick={() => {
+                  setPullDownWeight(pullDownWeight - 5);
+                }}
+                value={pullDownWeight}
+              />
+            </div>
+            <div>
+              <small className="display-block">Reps</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setPullDownReps(pullDownReps + 0.5);
+                }}
+                onStepperMinusClick={() => {
+                  setPullDownReps(pullDownReps - 0.5);
+                }}
+                value={pullDownReps}
+              />
+            </div>
           </div>
         </Block>
-        <BlockTitle>Chest Press</BlockTitle>
-        <Block strong outlineIos>
+        <Block strong outlineIos className="text-align-center">
           <div className="grid grid-cols-3 grid-gap">
-            <Button
-              raised
-              fill
-              round
-              onClick={() => {
-                if (chestPressTime > 0 && !isChestPressRunning) {
-                  setChestPressTime(0);
-                } else {
-                  setIsChestPressRunning(!isChestPressRunning);
+            <div>
+              <small className="display-block">
+                <b>Chest Press</b>
+              </small>
+              <Button
+                fill={chestPressTime !== 0 && !isChestPressRunning}
+                outline={chestPressTime === 0 || isChestPressRunning}
+                round
+                onClick={() => {
+                  if (chestPressTime > 0 && !isChestPressRunning) {
+                    setChestPressTime(0);
+                  } else {
+                    setIsChestPressRunning(!isChestPressRunning);
+                  }
+                }}
+                disabled={
+                  gymStartTime === undefined ||
+                  (!isChestPressRunning && isCurrentlyExercising)
                 }
-              }}
-            >
-              {chestPressTime > 0 && !isChestPressRunning
-                ? "Reset"
-                : isChestPressRunning
-                ? "Stop"
-                : "Start"}
-            </Button>
-            <Stepper
-              onStepperPlusClick={() => {
-                setChestPressWeight(chestPressWeight + 5);
-              }}
-              onStepperMinusClick={() => {
-                setChestPressWeight(chestPressWeight - 5);
-              }}
-              value={chestPressWeight}
-            />
-            <Chip outline text={formatSeconds(chestPressTime)} />
+              >
+                {chestPressTime > 0 && !isChestPressRunning
+                  ? formatSeconds(chestPressTime)
+                  : isChestPressRunning
+                  ? formatSeconds(chestPressTime)
+                  : "Start"}
+              </Button>
+            </div>
+            <div>
+              <small className="display-block">Weight</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setChestPressWeight(chestPressWeight + 5);
+                }}
+                onStepperMinusClick={() => {
+                  setChestPressWeight(chestPressWeight - 5);
+                }}
+                value={chestPressWeight}
+              />
+            </div>
+            <div>
+              <small className="display-block">Reps</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setChestPressReps(chestPressReps + 0.5);
+                }}
+                onStepperMinusClick={() => {
+                  setChestPressReps(chestPressReps - 0.5);
+                }}
+                value={chestPressReps}
+              />
+            </div>
           </div>
         </Block>
-        <BlockTitle>Leg Press</BlockTitle>
-        <Block strong outlineIos>
+        <Block strong outlineIos className="text-align-center">
           <div className="grid grid-cols-3 grid-gap">
-            <Button
-              raised
-              fill
-              round
-              onClick={() => {
-                if (legPressTime > 0 && !isLegPressRunning) {
-                  setLegPressTime(0);
-                } else {
-                  setIsLegPressRunning(!isLegPressRunning);
+            <div>
+              <small className="display-block">
+                <b>Leg Press</b>
+              </small>
+              <Button
+                fill={legPressTime !== 0 && !isLegPressRunning}
+                outline={legPressTime === 0 || isLegPressRunning}
+                round
+                onClick={() => {
+                  if (legPressTime > 0 && !isLegPressRunning) {
+                    setLegPressTime(0);
+                  } else {
+                    setIsLegPressRunning(!isLegPressRunning);
+                  }
+                }}
+                disabled={
+                  gymStartTime === undefined ||
+                  (!isLegPressRunning && isCurrentlyExercising)
                 }
-              }}
-            >
-              {legPressTime > 0 && !isLegPressRunning
-                ? "Reset"
-                : isLegPressRunning
-                ? "Stop"
-                : "Start"}
-            </Button>
-            <Stepper
-              onStepperPlusClick={() => {
-                setLegPressWeight(legPressWeight + 5);
-              }}
-              onStepperMinusClick={() => {
-                setLegPressWeight(legPressWeight - 5);
-              }}
-              value={legPressWeight}
-            />
-            <Chip outline text={formatSeconds(legPressTime)} />
+              >
+                {legPressTime > 0 && !isLegPressRunning
+                  ? formatSeconds(legPressTime)
+                  : isLegPressRunning
+                  ? formatSeconds(legPressTime)
+                  : "Start"}
+              </Button>
+            </div>
+            <div>
+              <small className="display-block">Weight</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setLegPressWeight(legPressWeight + 5);
+                }}
+                onStepperMinusClick={() => {
+                  setLegPressWeight(legPressWeight - 5);
+                }}
+                value={legPressWeight}
+              />
+            </div>
+            <div>
+              <small className="display-block">Reps</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setLegPressReps(legPressReps + 0.5);
+                }}
+                onStepperMinusClick={() => {
+                  setLegPressReps(legPressReps - 0.5);
+                }}
+                value={legPressReps}
+              />
+            </div>
           </div>
         </Block>
-        <BlockTitle>Seated Row</BlockTitle>
-        <Block strong outlineIos>
+        <Block strong outlineIos className="text-align-center">
           <div className="grid grid-cols-3 grid-gap">
-            <Button
-              raised
-              fill
-              round
-              onClick={() => {
-                if (seatedRowTime > 0 && !isSeatedRowRunning) {
-                  setSeatedRowTime(0);
-                } else {
-                  setIsSeatedRowRunning(!isSeatedRowRunning);
+            <div>
+              <small className="display-block">
+                <b>Seated Row</b>
+              </small>
+              <Button
+                fill={seatedRowTime !== 0 && !isSeatedRowRunning}
+                outline={seatedRowTime === 0 || isSeatedRowRunning}
+                round
+                onClick={() => {
+                  if (seatedRowTime > 0 && !isSeatedRowRunning) {
+                    setSeatedRowTime(0);
+                  } else {
+                    setIsSeatedRowRunning(!isSeatedRowRunning);
+                  }
+                }}
+                disabled={
+                  gymStartTime === undefined ||
+                  (!isSeatedRowRunning && isCurrentlyExercising)
                 }
-              }}
-            >
-              {seatedRowTime > 0 && !isSeatedRowRunning
-                ? "Reset"
-                : isSeatedRowRunning
-                ? "Stop"
-                : "Start"}
-            </Button>
-            <Stepper
-              onStepperPlusClick={() => {
-                setSeatedRowWeight(seatedRowWeight + 5);
-              }}
-              onStepperMinusClick={() => {
-                setSeatedRowWeight(seatedRowWeight - 5);
-              }}
-              value={seatedRowWeight}
-            />
-            <Chip outline text={formatSeconds(seatedRowTime)} />
+              >
+                {seatedRowTime > 0 && !isSeatedRowRunning
+                  ? formatSeconds(seatedRowTime)
+                  : isSeatedRowRunning
+                  ? formatSeconds(seatedRowTime)
+                  : "Start"}
+              </Button>
+            </div>
+            <div>
+              <small className="display-block">Weight</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setSeatedRowWeight(seatedRowWeight + 5);
+                }}
+                onStepperMinusClick={() => {
+                  setSeatedRowWeight(seatedRowWeight - 5);
+                }}
+                value={seatedRowWeight}
+              />
+            </div>
+            <div>
+              <small className="display-block">Reps</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setSeatedRowReps(seatedRowReps + 0.5);
+                }}
+                onStepperMinusClick={() => {
+                  setSeatedRowReps(seatedRowReps - 0.5);
+                }}
+                value={seatedRowReps}
+              />
+            </div>
           </div>
         </Block>
-        <BlockTitle>Overhead Press</BlockTitle>
-        <Block strong outlineIos>
+        <Block strong outlineIos className="text-align-center">
           <div className="grid grid-cols-3 grid-gap">
-            <Button
-              raised
-              fill
-              round
-              onClick={() => {
-                if (overheadPressTime > 0 && !isOverheadPressRunning) {
-                  setOverheadPressTime(0);
-                } else {
-                  setIsOverheadPressRunning(!isOverheadPressRunning);
+            <div>
+              <small className="display-block">
+                <b>Overhead Press</b>
+              </small>
+              <Button
+                fill={overheadPressTime !== 0 && !isOverheadPressRunning}
+                outline={overheadPressTime === 0 || isOverheadPressRunning}
+                round
+                onClick={() => {
+                  if (overheadPressTime > 0 && !isOverheadPressRunning) {
+                    setOverheadPressTime(0);
+                  } else {
+                    setIsOverheadPressRunning(!isOverheadPressRunning);
+                  }
+                }}
+                disabled={
+                  gymStartTime === undefined ||
+                  (!isOverheadPressRunning && isCurrentlyExercising)
                 }
-              }}
-            >
-              {overheadPressTime > 0 && !isOverheadPressRunning
-                ? "Reset"
-                : isOverheadPressRunning
-                ? "Stop"
-                : "Start"}
-            </Button>
-            <Stepper
-              onStepperPlusClick={() => {
-                setOverheadPressWeight(overheadPressWeight + 5);
-              }}
-              onStepperMinusClick={() => {
-                setOverheadPressWeight(overheadPressWeight - 5);
-              }}
-              value={overheadPressWeight}
-            />
-            <Chip outline text={formatSeconds(overheadPressTime)} />
+              >
+                {overheadPressTime > 0 && !isOverheadPressRunning
+                  ? formatSeconds(overheadPressTime)
+                  : isOverheadPressRunning
+                  ? formatSeconds(overheadPressTime)
+                  : "Start"}
+              </Button>
+            </div>
+            <div>
+              <small className="display-block">Weight</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setOverheadPressWeight(overheadPressWeight + 5);
+                }}
+                onStepperMinusClick={() => {
+                  setOverheadPressWeight(overheadPressWeight - 5);
+                }}
+                value={overheadPressWeight}
+              />
+            </div>
+            <div>
+              <small className="display-block">Reps</small>
+              <Stepper
+                onStepperPlusClick={() => {
+                  setOverheadPressReps(overheadPressReps + 0.5);
+                }}
+                onStepperMinusClick={() => {
+                  setOverheadPressReps(overheadPressReps - 0.5);
+                }}
+                value={overheadPressReps}
+              />
+            </div>
           </div>
         </Block>
+
         <BlockTitle>Stats</BlockTitle>
         <Block strong outlineIos>
           Total Time <Chip outline text={formatSeconds(statTotalTime)} />
@@ -337,11 +552,6 @@ export default () => {
           Total Weight Over Time{" "}
           <Chip outline text={`${statTotalWeightOverTime} lbs/s`} />
         </Block>
-        {statTotalWeightOverTime > 9000 && (
-          <Block strong outlineIos>
-            Over 9000 <Chip outline text={"Yes"} />
-          </Block>
-        )}
         <BlockTitle>Log</BlockTitle>
         <Block strong outlineIos>
           <Block>
@@ -352,23 +562,7 @@ export default () => {
                   text={new Date(entry.time).toLocaleDateString()}
                 />
                 <br />
-                <Chip
-                  outline
-                  text={`Score: ${Math.round(
-                    (entry.pullDown.weight * entry.pullDown.time +
-                      entry.chestPress.weight * entry.chestPress.time +
-                      entry.legPress.weight * entry.legPress.time +
-                      entry.seatedRow.weight * entry.seatedRow.time +
-                      entry.overheadPress.weight * entry.overheadPress.time -
-                      (entry.totalGymTime -
-                        entry.pullDown.time -
-                        entry.chestPress.time -
-                        entry.legPress.time -
-                        entry.seatedRow.time -
-                        entry.overheadPress.time)) /
-                      1000
-                  )}`}
-                />
+                <Chip outline text={`Score: ${calculateScore(entry)}`} />
                 <br />
                 <Chip
                   outline
@@ -402,35 +596,45 @@ export default () => {
                   outline
                   text={`Pulldown: ${
                     entry.pullDown.weight
-                  } lbs for ${formatSeconds(entry.pullDown.time)}`}
+                  } lbs for ${formatSeconds(entry.pullDown.time)}for ${
+                    entry.pullDown.reps
+                  } reps`}
                 />
                 <br />
                 <Chip
                   outline
                   text={`Chest Press: ${
                     entry.chestPress.weight
-                  } lbs for ${formatSeconds(entry.chestPress.time)}`}
+                  } lbs for ${formatSeconds(entry.chestPress.time)} for ${
+                    entry.chestPress.reps
+                  } reps`}
                 />
                 <br />
                 <Chip
                   outline
                   text={`Leg Press: ${
                     entry.legPress.weight
-                  } lbs for ${formatSeconds(entry.legPress.time)}`}
+                  } lbs for ${formatSeconds(entry.legPress.time)} for ${
+                    entry.legPress.reps
+                  } reps`}
                 />
                 <br />
                 <Chip
                   outline
                   text={`Seated Row: ${
                     entry.seatedRow.weight
-                  } lbs for ${formatSeconds(entry.seatedRow.time)}`}
+                  } lbs for ${formatSeconds(entry.seatedRow.time)} for ${
+                    entry.seatedRow.reps
+                  } reps`}
                 />
                 <br />
                 <Chip
                   outline
                   text={`Overhead Press: ${
                     entry.overheadPress.weight
-                  } lbs for ${formatSeconds(entry.overheadPress.time)}`}
+                  } lbs for ${formatSeconds(entry.overheadPress.time)} for ${
+                    entry.overheadPress.reps
+                  } reps`}
                 />
                 <br />
                 <br />
