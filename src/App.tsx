@@ -289,6 +289,8 @@ export default () => {
         <BlockTitle>Workout</BlockTitle>
         <Block
           className="text-align-center"
+          strong
+          outlineIos
           style={{
             padding: "4px",
           }}
