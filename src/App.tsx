@@ -71,19 +71,19 @@ export default () => {
     JSON.parse(localStorage.getItem("exercise_log") || "[]") || []
   );
 
-  const [pullDownWeight, setPullDownWeight] = useState(
+  const [pullDownWeight, setPullDownWeight] = useState(() =>
     localStorageGetOr("last_pull_down_weight", 100)
   );
-  const [chestPressWeight, setChestPressWeight] = useState(
+  const [chestPressWeight, setChestPressWeight] = useState(() =>
     localStorageGetOr("last_chest_press_weight", 100)
   );
-  const [legPressWeight, setLegPressWeight] = useState(
+  const [legPressWeight, setLegPressWeight] = useState(() =>
     localStorageGetOr("last_leg_press_weight", 100)
   );
-  const [seatedRowWeight, setSeatedRowWeight] = useState(
+  const [seatedRowWeight, setSeatedRowWeight] = useState(() =>
     localStorageGetOr("last_seated_row_weight", 100)
   );
-  const [overheadPressWeight, setOverheadPressWeight] = useState(
+  const [overheadPressWeight, setOverheadPressWeight] = useState(() =>
     localStorageGetOr("last_overhead_press_weight", 100)
   );
 
@@ -100,19 +100,19 @@ export default () => {
   const [isSeatedRowRunning, setIsSeatedRowRunning] = useState(false);
   const [isOverheadPressRunning, setIsOverheadPressRunning] = useState(false);
 
-  const [pullDownReps, setPullDownReps] = useState(
+  const [pullDownReps, setPullDownReps] = useState(() =>
     localStorageGetOr("last_pull_down_reps", 4)
   );
-  const [chestPressReps, setChestPressReps] = useState(
+  const [chestPressReps, setChestPressReps] = useState(() =>
     localStorageGetOr("last_chest_press_reps", 4)
   );
-  const [legPressReps, setLegPressReps] = useState(
+  const [legPressReps, setLegPressReps] = useState(() =>
     localStorageGetOr("last_leg_press_reps", 4)
   );
-  const [seatedRowReps, setSeatedRowReps] = useState(
+  const [seatedRowReps, setSeatedRowReps] = useState(() =>
     localStorageGetOr("last_seated_row_reps", 4)
   );
-  const [overheadPressReps, setOverheadPressReps] = useState(
+  const [overheadPressReps, setOverheadPressReps] = useState(() =>
     localStorageGetOr("last_overhead_press_reps", 4)
   );
 
@@ -327,8 +327,8 @@ export default () => {
               <small className="display-block">Weight</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setPullDownWeight(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setPullDownWeight(e);
                 }}
                 step={5}
                 value={pullDownWeight}
@@ -340,8 +340,8 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setPullDownReps(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setPullDownReps(e);
                 }}
                 step={0.5}
                 value={pullDownReps}
@@ -383,8 +383,8 @@ export default () => {
               <small className="display-block">Weight</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setChestPressWeight(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setChestPressWeight(e);
                 }}
                 step={5}
                 value={chestPressWeight}
@@ -396,8 +396,8 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setChestPressReps(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setChestPressReps(e);
                 }}
                 step={0.5}
                 value={chestPressReps}
@@ -439,8 +439,9 @@ export default () => {
               <small className="display-block">Weight</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setLegPressWeight(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setLegPressWeight(e);
+                  localStorage.setItem("last_leg_press_weight", e.target.value);
                 }}
                 step={5}
                 value={legPressWeight}
@@ -452,8 +453,9 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setLegPressReps(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setLegPressReps(e);
+                  localStorage.setItem("last_leg_press_reps", e.target.value);
                 }}
                 step={0.5}
                 value={legPressReps}
@@ -495,8 +497,8 @@ export default () => {
               <small className="display-block">Weight</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setSeatedRowWeight(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setSeatedRowWeight(e);
                 }}
                 step={5}
                 max={999}
@@ -508,8 +510,8 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setSeatedRowReps(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setSeatedRowReps(e);
                 }}
                 step={0.5}
                 max={999}
@@ -551,8 +553,8 @@ export default () => {
               <small className="display-block">Weight</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setOverheadPressWeight(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setOverheadPressWeight(e);
                 }}
                 max={999}
                 min={0}
@@ -564,8 +566,8 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 smallIos
-                onChange={(e) => {
-                  setOverheadPressReps(parseInt(e.target.value));
+                onStepperChange={(e) => {
+                  setOverheadPressReps(e);
                 }}
                 max={999}
                 min={0}
