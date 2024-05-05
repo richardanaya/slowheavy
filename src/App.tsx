@@ -10,13 +10,45 @@ import {
   Chip,
 } from "framework7-react";
 
-function calculateScore(entry: any) {
+interface IWorkoutEntry {
+  time: string;
+  totalGymTime: number;
+  pullDown: {
+    weight: number;
+    reps: number;
+    time: number;
+  };
+  chestPress: {
+    weight: number;
+    reps: number;
+    time: number;
+  };
+  legPress: {
+    weight: number;
+    reps: number;
+    time: number;
+  };
+  seatedRow: {
+    weight: number;
+    reps: number;
+    time: number;
+  };
+  overheadPress: {
+    weight: number;
+    reps: number;
+    time: number;
+  };
+}
+
+function calculateScore(entry: IWorkoutEntry) {
   return Math.round(
-    (entry.pullDown.weight * entry.pullDown.time +
-      entry.chestPress.weight * entry.chestPress.time +
-      entry.legPress.weight * entry.legPress.time +
-      entry.seatedRow.weight * entry.seatedRow.time +
-      entry.overheadPress.weight * entry.overheadPress.time -
+    ((entry.pullDown.weight * entry.pullDown.time) / entry.pullDown.reps +
+      (entry.chestPress.weight * entry.chestPress.time) /
+        entry.chestPress.reps +
+      (entry.legPress.weight * entry.legPress.time) / entry.legPress.reps +
+      (entry.seatedRow.weight * entry.seatedRow.time) / entry.seatedRow.reps +
+      (entry.overheadPress.weight * entry.overheadPress.time) /
+        entry.overheadPress.reps -
       (entry.totalGymTime -
         entry.pullDown.time -
         entry.chestPress.time -
@@ -27,7 +59,7 @@ function calculateScore(entry: any) {
   );
 }
 
-function localStorageGetOr(key: string, defaultValue: any) {
+function localStorageGetOr(key: string, defaultValue: number) {
   const keyValue = localStorage.getItem(key);
   return keyValue ? JSON.parse(keyValue) : defaultValue;
 }
@@ -35,7 +67,7 @@ function localStorageGetOr(key: string, defaultValue: any) {
 export default () => {
   // lets make an exercise tracker that tracks the number of seconds we do an exercise at a certain weight
 
-  const [log, setLog] = useState(
+  const [log, setLog] = useState<IWorkoutEntry[]>(
     JSON.parse(localStorage.getItem("exercise_log") || "[]") || []
   );
 
@@ -189,7 +221,7 @@ export default () => {
     overheadPressWeight * overheadPressTime;
 
   const end = new Date();
-  const currentEntry = gymStartTime
+  const currentEntry: IWorkoutEntry | undefined = gymStartTime
     ? {
         time: new Date().toISOString(),
         totalGymTime: end.getTime() / 1000 - gymStartTime.getTime() / 1000,
@@ -555,7 +587,7 @@ export default () => {
         <BlockTitle>Log</BlockTitle>
         <Block strong outlineIos>
           <Block>
-            {log.map((entry: any, i: number) => (
+            {log.map((entry: IWorkoutEntry, i: number) => (
               <div>
                 <Chip
                   outline
@@ -644,7 +676,9 @@ export default () => {
                   small
                   color="red"
                   onClick={() => {
-                    const newLog = log.filter((_: any, j: number) => i !== j);
+                    const newLog = log.filter(
+                      (_: IWorkoutEntry, j: number) => i !== j
+                    );
                     localStorage.setItem(
                       "exercise_log",
                       JSON.stringify(newLog)
