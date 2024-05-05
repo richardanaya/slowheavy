@@ -332,10 +332,10 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 onStepperPlusClick={() => {
-                  setPullDownReps(pullDownReps + 0.5);
+                  setPullDownReps(pullDownReps + 1);
                 }}
                 onStepperMinusClick={() => {
-                  setPullDownReps(pullDownReps - 0.5);
+                  setPullDownReps(pullDownReps - 1);
                 }}
                 value={pullDownReps}
               />
@@ -387,10 +387,10 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 onStepperPlusClick={() => {
-                  setChestPressReps(chestPressReps + 0.5);
+                  setChestPressReps(chestPressReps + 1);
                 }}
                 onStepperMinusClick={() => {
-                  setChestPressReps(chestPressReps - 0.5);
+                  setChestPressReps(chestPressReps - 1);
                 }}
                 value={chestPressReps}
               />
@@ -442,10 +442,10 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 onStepperPlusClick={() => {
-                  setLegPressReps(legPressReps + 0.5);
+                  setLegPressReps(legPressReps + 1);
                 }}
                 onStepperMinusClick={() => {
-                  setLegPressReps(legPressReps - 0.5);
+                  setLegPressReps(legPressReps - 1);
                 }}
                 value={legPressReps}
               />
@@ -497,10 +497,10 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 onStepperPlusClick={() => {
-                  setSeatedRowReps(seatedRowReps + 0.5);
+                  setSeatedRowReps(seatedRowReps + 1);
                 }}
                 onStepperMinusClick={() => {
-                  setSeatedRowReps(seatedRowReps - 0.5);
+                  setSeatedRowReps(seatedRowReps - 1);
                 }}
                 value={seatedRowReps}
               />
@@ -552,10 +552,10 @@ export default () => {
               <small className="display-block">Reps</small>
               <Stepper
                 onStepperPlusClick={() => {
-                  setOverheadPressReps(overheadPressReps + 0.5);
+                  setOverheadPressReps(overheadPressReps + 1);
                 }}
                 onStepperMinusClick={() => {
-                  setOverheadPressReps(overheadPressReps - 0.5);
+                  setOverheadPressReps(overheadPressReps - 1);
                 }}
                 value={overheadPressReps}
               />
