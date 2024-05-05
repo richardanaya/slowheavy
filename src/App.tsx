@@ -207,25 +207,6 @@ export default () => {
     }
   }, [isOverheadPressRunning, overheadPressTime]);
 
-  const statTotalTime =
-    pullDownTime +
-    chestPressTime +
-    legPressTime +
-    seatedRowTime +
-    overheadPressTime;
-  const statTotalWeightOverTime =
-    pullDownWeight * pullDownTime +
-    chestPressWeight * chestPressTime +
-    legPressWeight * legPressTime +
-    seatedRowWeight * seatedRowTime +
-    overheadPressWeight * overheadPressTime;
-  const statTotalReps =
-    pullDownReps +
-    chestPressReps +
-    legPressReps +
-    seatedRowReps +
-    overheadPressReps;
-
   const end = new Date();
   const currentEntry: IWorkoutEntry | undefined = gymStartTime
     ? {
@@ -582,156 +563,147 @@ export default () => {
           </div>
         </Block>
 
-        <BlockTitle>Stats</BlockTitle>
-        <Block strong outlineIos>
-          Total Time <Chip outline text={formatSeconds(statTotalTime)} />
-        </Block>
-        <Block strong outlineIos>
-          Total Weight Time{" "}
-          <Chip outline text={`${statTotalWeightOverTime} lbs • s`} />
-        </Block>
-        <Block>
-          Total Reps <Chip outline text={statTotalReps} />
-        </Block>
-        <Block>
-          Total Weight Time per Rep
-          <Chip outline text={statTotalWeightOverTime / statTotalReps} /> lbs •
-          s / rep
-        </Block>
         <BlockTitle>Log</BlockTitle>
         <Block strong outlineIos>
           <Block>
-            {log.map((entry: IWorkoutEntry, i: number) => (
-              <div>
-                <Chip
-                  outline
-                  text={new Date(entry.time).toLocaleDateString()}
-                />
-                <br />
-                <Chip outline text={`Score: ${calculateScore(entry)}`} />
-                <br />
-                <Chip
-                  outline
-                  text={`Total Weight Time : ${
-                    entry.pullDown.weight * entry.pullDown.time +
-                    entry.chestPress.weight * entry.chestPress.time +
-                    entry.legPress.weight * entry.legPress.time +
-                    entry.seatedRow.weight * entry.seatedRow.time +
-                    entry.overheadPress.weight * entry.overheadPress.time
-                  } lbs • s`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Total Reps: ${
-                    entry.pullDown.reps +
-                    entry.chestPress.reps +
-                    entry.legPress.reps +
-                    entry.seatedRow.reps +
-                    entry.overheadPress.reps
-                  }`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Total Weight Time per Rep: ${
-                    (entry.pullDown.weight * entry.pullDown.time +
-                      entry.chestPress.weight * entry.chestPress.time +
-                      entry.legPress.weight * entry.legPress.time +
-                      entry.seatedRow.weight * entry.seatedRow.time +
-                      entry.overheadPress.weight * entry.overheadPress.time) /
-                    (entry.pullDown.reps +
-                      entry.chestPress.reps +
-                      entry.legPress.reps +
-                      entry.seatedRow.reps +
-                      entry.overheadPress.reps)
-                  } lbs • s / rep`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Total Gym Time: ${formatSeconds(entry.totalGymTime)}`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Total Non-Exercise Time: ${formatSeconds(
-                    entry.totalGymTime -
-                      entry.pullDown.time -
-                      entry.chestPress.time -
-                      entry.legPress.time -
-                      entry.seatedRow.time -
-                      entry.overheadPress.time
-                  )}`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Pulldown: ${
-                    entry.pullDown.weight
-                  } lbs for ${formatSeconds(entry.pullDown.time)}for ${
-                    entry.pullDown.reps
-                  } reps`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Chest Press: ${
-                    entry.chestPress.weight
-                  } lbs for ${formatSeconds(entry.chestPress.time)} for ${
-                    entry.chestPress.reps
-                  } reps`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Leg Press: ${
-                    entry.legPress.weight
-                  } lbs for ${formatSeconds(entry.legPress.time)} for ${
-                    entry.legPress.reps
-                  } reps`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Seated Row: ${
-                    entry.seatedRow.weight
-                  } lbs for ${formatSeconds(entry.seatedRow.time)} for ${
-                    entry.seatedRow.reps
-                  } reps`}
-                />
-                <br />
-                <Chip
-                  outline
-                  text={`Overhead Press: ${
-                    entry.overheadPress.weight
-                  } lbs for ${formatSeconds(entry.overheadPress.time)} for ${
-                    entry.overheadPress.reps
-                  } reps`}
-                />
-                <br />
-                <br />
-                <Button
-                  outline
-                  round
-                  small
-                  color="red"
-                  onClick={() => {
-                    const newLog = log.filter(
-                      (_: IWorkoutEntry, j: number) => i !== j
-                    );
-                    localStorage.setItem(
-                      "exercise_log",
-                      JSON.stringify(newLog)
-                    );
-                    setLog(newLog);
-                  }}
-                >
-                  Delete
-                </Button>
-                <br />
-                <br />
-              </div>
+            {log.reverse().map((entry: IWorkoutEntry, i: number) => (
+              <>
+                <BlockTitle>
+                  {new Date(entry.time).toLocaleDateString() +
+                    " " +
+                    new Date(entry.time).toLocaleTimeString()}
+                </BlockTitle>
+                <Block>
+                  <div>
+                    <Chip outline text={`Score: ${calculateScore(entry)}`} />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Total Weight Time : ${
+                        entry.pullDown.weight * entry.pullDown.time +
+                        entry.chestPress.weight * entry.chestPress.time +
+                        entry.legPress.weight * entry.legPress.time +
+                        entry.seatedRow.weight * entry.seatedRow.time +
+                        entry.overheadPress.weight * entry.overheadPress.time
+                      } lbs • s`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Total Reps: ${
+                        entry.pullDown.reps +
+                        entry.chestPress.reps +
+                        entry.legPress.reps +
+                        entry.seatedRow.reps +
+                        entry.overheadPress.reps
+                      }`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Total Weight Time per Rep: ${
+                        (entry.pullDown.weight * entry.pullDown.time +
+                          entry.chestPress.weight * entry.chestPress.time +
+                          entry.legPress.weight * entry.legPress.time +
+                          entry.seatedRow.weight * entry.seatedRow.time +
+                          entry.overheadPress.weight *
+                            entry.overheadPress.time) /
+                        (entry.pullDown.reps +
+                          entry.chestPress.reps +
+                          entry.legPress.reps +
+                          entry.seatedRow.reps +
+                          entry.overheadPress.reps || 1)
+                      } lbs • s / rep`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Total Gym Time: ${formatSeconds(
+                        entry.totalGymTime
+                      )}`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Total Non-Exercise Time: ${formatSeconds(
+                        entry.totalGymTime -
+                          entry.pullDown.time -
+                          entry.chestPress.time -
+                          entry.legPress.time -
+                          entry.seatedRow.time -
+                          entry.overheadPress.time
+                      )}`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Pulldown: ${
+                        entry.pullDown.weight
+                      } lbs for ${formatSeconds(entry.pullDown.time)}for ${
+                        entry.pullDown.reps
+                      } reps`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Chest Press: ${
+                        entry.chestPress.weight
+                      } lbs for ${formatSeconds(entry.chestPress.time)} for ${
+                        entry.chestPress.reps
+                      } reps`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Leg Press: ${
+                        entry.legPress.weight
+                      } lbs for ${formatSeconds(entry.legPress.time)} for ${
+                        entry.legPress.reps
+                      } reps`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Seated Row: ${
+                        entry.seatedRow.weight
+                      } lbs for ${formatSeconds(entry.seatedRow.time)} for ${
+                        entry.seatedRow.reps
+                      } reps`}
+                    />
+                    <br />
+                    <Chip
+                      outline
+                      text={`Overhead Press: ${
+                        entry.overheadPress.weight
+                      } lbs for ${formatSeconds(
+                        entry.overheadPress.time
+                      )} for ${entry.overheadPress.reps} reps`}
+                    />
+                    <br />
+                    <br />
+                    <Button
+                      outline
+                      round
+                      small
+                      color="red"
+                      onClick={() => {
+                        const newLog = log.filter(
+                          (_: IWorkoutEntry, j: number) => i !== j
+                        );
+                        localStorage.setItem(
+                          "exercise_log",
+                          JSON.stringify(newLog)
+                        );
+                        setLog(newLog);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                    <br />
+                    <br />
+                  </div>
+                </Block>
+              </>
             ))}
           </Block>
         </Block>
