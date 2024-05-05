@@ -219,6 +219,12 @@ export default () => {
     legPressWeight * legPressTime +
     seatedRowWeight * seatedRowTime +
     overheadPressWeight * overheadPressTime;
+  const statTotalReps =
+    pullDownReps +
+    chestPressReps +
+    legPressReps +
+    seatedRowReps +
+    overheadPressReps;
 
   const end = new Date();
   const currentEntry: IWorkoutEntry | undefined = gymStartTime
@@ -581,8 +587,16 @@ export default () => {
           Total Time <Chip outline text={formatSeconds(statTotalTime)} />
         </Block>
         <Block strong outlineIos>
-          Total Weight Over Time{" "}
-          <Chip outline text={`${statTotalWeightOverTime} lbs/s`} />
+          Total Weight Time{" "}
+          <Chip outline text={`${statTotalWeightOverTime} lbs • s`} />
+        </Block>
+        <Block>
+          Total Reps <Chip outline text={statTotalReps} />
+        </Block>
+        <Block>
+          Total Weight Time per Rep
+          <Chip outline text={statTotalWeightOverTime / statTotalReps} /> lbs •
+          s / rep
         </Block>
         <BlockTitle>Log</BlockTitle>
         <Block strong outlineIos>
@@ -598,13 +612,40 @@ export default () => {
                 <br />
                 <Chip
                   outline
-                  text={`Total Weight Over Time : ${
+                  text={`Total Weight Time : ${
                     entry.pullDown.weight * entry.pullDown.time +
                     entry.chestPress.weight * entry.chestPress.time +
                     entry.legPress.weight * entry.legPress.time +
                     entry.seatedRow.weight * entry.seatedRow.time +
                     entry.overheadPress.weight * entry.overheadPress.time
-                  } lbs/s`}
+                  } lbs • s`}
+                />
+                <br />
+                <Chip
+                  outline
+                  text={`Total Reps: ${
+                    entry.pullDown.reps +
+                    entry.chestPress.reps +
+                    entry.legPress.reps +
+                    entry.seatedRow.reps +
+                    entry.overheadPress.reps
+                  }`}
+                />
+                <br />
+                <Chip
+                  outline
+                  text={`Total Weight Time per Rep: ${
+                    (entry.pullDown.weight * entry.pullDown.time +
+                      entry.chestPress.weight * entry.chestPress.time +
+                      entry.legPress.weight * entry.legPress.time +
+                      entry.seatedRow.weight * entry.seatedRow.time +
+                      entry.overheadPress.weight * entry.overheadPress.time) /
+                    (entry.pullDown.reps +
+                      entry.chestPress.reps +
+                      entry.legPress.reps +
+                      entry.seatedRow.reps +
+                      entry.overheadPress.reps)
+                  } lbs • s / rep`}
                 />
                 <br />
                 <Chip
