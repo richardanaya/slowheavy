@@ -13,6 +13,10 @@ import {
 export default () => {
   // lets make an exercise tracker that tracks the number of seconds we do an exercise at a certain weight
 
+  const [log, setLog] = useState(
+    JSON.parse(localStorage.getItem("exercise_log") || "[]") || []
+  );
+
   const [pullDownWeight, setPullDownWeight] = useState(0);
   const [chestPressWeight, setChestPressWeight] = useState(0);
   const [legPressWeight, setLegPressWeight] = useState(0);
@@ -190,6 +194,87 @@ export default () => {
             Over 9000 <Chip outline text={"Yes"} />
           </Block>
         )}
+        <BlockTitle>Log</BlockTitle>
+        <Block strong outlineIos>
+          <Button
+            raised
+            fill
+            round
+            onClick={() => {
+              const entry = {
+                time: new Date().toISOString(),
+                pullDown: { weight: pullDownWeight, time: pullDownTime },
+                chestPress: { weight: chestPressWeight, time: chestPressTime },
+                legPress: { weight: legPressWeight, time: legPressTime },
+              };
+
+              // save to exercise_log array in localStorage
+              const exerciseLog = JSON.parse(
+                localStorage.getItem("exercise_log") || "[]"
+              );
+              exerciseLog.push(entry);
+              localStorage.setItem("exercise_log", JSON.stringify(exerciseLog));
+              setLog(exerciseLog);
+            }}
+          >
+            Add Log Entry
+          </Button>
+          <Block>
+            {log.map((entry: any) => (
+              <div>
+                <Chip
+                  outline
+                  color="black"
+                  text={new Date(entry.time).toLocaleDateString()}
+                />
+                <br />
+                <Chip
+                  outline
+                  text={`Score: ${
+                    entry.pullDown.weight * entry.pullDown.time +
+                    entry.chestPress.weight * entry.chestPress.time +
+                    entry.legPress.weight * entry.legPress.time
+                  } lbs/s`}
+                />
+                <br />
+                <Chip
+                  outline
+                  text={`Pull Down: ${
+                    entry.pullDown.weight
+                  } lbs for ${formatSeconds(entry.pullDown.time)}`}
+                />
+                <br />
+                <Chip
+                  outline
+                  text={`Chest Press: ${
+                    entry.chestPress.weight
+                  } lbs for ${formatSeconds(entry.chestPress.time)}`}
+                />
+                <br />
+                <Chip
+                  outline
+                  text={`Leg Press: ${
+                    entry.legPress.weight
+                  } lbs for ${formatSeconds(entry.legPress.time)}`}
+                />
+                <br />
+                <br />
+              </div>
+            ))}
+          </Block>
+          <Button
+            raised
+            fill
+            round
+            color="black"
+            onClick={() => {
+              localStorage.removeItem("exercise_log");
+              setLog([]);
+            }}
+          >
+            Clear Log
+          </Button>
+        </Block>
       </Page>
     </App>
   );
