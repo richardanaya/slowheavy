@@ -287,8 +287,13 @@ export default () => {
         </Block>
 
         <BlockTitle>Workout</BlockTitle>
-        <Block strong outlineIos className="text-align-center">
-          <div className="grid grid-cols-3 grid-gap">
+        <Block
+          className="text-align-center"
+          style={{
+            padding: "4px",
+          }}
+        >
+          <div className="grid grid-cols-3 ">
             <div>
               <small className="display-block">
                 <b>Pulldown</b>
@@ -319,31 +324,32 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setPullDownWeight(pullDownWeight + 5);
+                smallIos
+                onChange={(e) => {
+                  setPullDownWeight(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setPullDownWeight(pullDownWeight - 5);
-                }}
+                step={5}
                 value={pullDownWeight}
+                max={999}
+                min={0}
               />
             </div>
             <div>
               <small className="display-block">Reps</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setPullDownReps(pullDownReps + 1);
+                smallIos
+                onChange={(e) => {
+                  setPullDownReps(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setPullDownReps(pullDownReps - 1);
-                }}
+                step={0.5}
                 value={pullDownReps}
+                max={999}
+                min={0}
               />
             </div>
           </div>
-        </Block>
-        <Block strong outlineIos className="text-align-center">
-          <div className="grid grid-cols-3 grid-gap">
+          <br />
+          <div className="grid grid-cols-3 ">
             <div>
               <small className="display-block">
                 <b>Chest Press</b>
@@ -374,31 +380,32 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setChestPressWeight(chestPressWeight + 5);
+                smallIos
+                onChange={(e) => {
+                  setChestPressWeight(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setChestPressWeight(chestPressWeight - 5);
-                }}
+                step={5}
                 value={chestPressWeight}
+                max={999}
+                min={0}
               />
             </div>
             <div>
               <small className="display-block">Reps</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setChestPressReps(chestPressReps + 1);
+                smallIos
+                onChange={(e) => {
+                  setChestPressReps(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setChestPressReps(chestPressReps - 1);
-                }}
+                step={0.5}
                 value={chestPressReps}
+                max={999}
+                min={0}
               />
             </div>
           </div>
-        </Block>
-        <Block strong outlineIos className="text-align-center">
-          <div className="grid grid-cols-3 grid-gap">
+          <br />
+          <div className="grid grid-cols-3 ">
             <div>
               <small className="display-block">
                 <b>Leg Press</b>
@@ -429,31 +436,32 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setLegPressWeight(legPressWeight + 5);
+                smallIos
+                onChange={(e) => {
+                  setLegPressWeight(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setLegPressWeight(legPressWeight - 5);
-                }}
+                step={5}
                 value={legPressWeight}
+                max={999}
+                min={0}
               />
             </div>
             <div>
               <small className="display-block">Reps</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setLegPressReps(legPressReps + 1);
+                smallIos
+                onChange={(e) => {
+                  setLegPressReps(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setLegPressReps(legPressReps - 1);
-                }}
+                step={0.5}
                 value={legPressReps}
+                max={999}
+                min={0}
               />
             </div>
           </div>
-        </Block>
-        <Block strong outlineIos className="text-align-center">
-          <div className="grid grid-cols-3 grid-gap">
+          <br />
+          <div className="grid grid-cols-3 ">
             <div>
               <small className="display-block">
                 <b>Seated Row</b>
@@ -484,31 +492,32 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setSeatedRowWeight(seatedRowWeight + 5);
+                smallIos
+                onChange={(e) => {
+                  setSeatedRowWeight(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setSeatedRowWeight(seatedRowWeight - 5);
-                }}
+                step={5}
+                max={999}
+                min={0}
                 value={seatedRowWeight}
               />
             </div>
             <div>
               <small className="display-block">Reps</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setSeatedRowReps(seatedRowReps + 1);
+                smallIos
+                onChange={(e) => {
+                  setSeatedRowReps(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setSeatedRowReps(seatedRowReps - 1);
-                }}
+                step={0.5}
+                max={999}
+                min={0}
                 value={seatedRowReps}
               />
             </div>
           </div>
-        </Block>
-        <Block strong outlineIos className="text-align-center">
-          <div className="grid grid-cols-3 grid-gap">
+          <br />
+          <div className="grid grid-cols-3 ">
             <div>
               <small className="display-block">
                 <b>Overhead Press</b>
@@ -539,24 +548,26 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setOverheadPressWeight(overheadPressWeight + 5);
+                smallIos
+                onChange={(e) => {
+                  setOverheadPressWeight(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setOverheadPressWeight(overheadPressWeight - 5);
-                }}
+                max={999}
+                min={0}
+                step={5}
                 value={overheadPressWeight}
               />
             </div>
             <div>
               <small className="display-block">Reps</small>
               <Stepper
-                onStepperPlusClick={() => {
-                  setOverheadPressReps(overheadPressReps + 1);
+                smallIos
+                onChange={(e) => {
+                  setOverheadPressReps(parseInt(e.target.value));
                 }}
-                onStepperMinusClick={() => {
-                  setOverheadPressReps(overheadPressReps - 1);
-                }}
+                max={999}
+                min={0}
+                step={0.5}
                 value={overheadPressReps}
               />
             </div>
