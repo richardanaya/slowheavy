@@ -251,11 +251,20 @@ export default () => {
   return (
     <App>
       <Page>
-        <Navbar title="Slow Heavy" />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+        >
+          <img src="./slowheavy.png" width="90%" />
+        </div>
         <Block strong outlineIos>
           <Button
             fill
             round
+            bgColor="black"
             onClick={() => {
               if (gymStartTime === undefined) {
                 setGymStartTime(new Date());
@@ -311,6 +320,7 @@ export default () => {
                 fill={pullDownTime !== 0 && !isPullDownRunning}
                 outline={pullDownTime === 0 || isPullDownRunning}
                 round
+                color="black"
                 onClick={() => {
                   if (pullDownTime > 0 && !isPullDownRunning) {
                     f7.dialog.confirm(
@@ -339,6 +349,7 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setPullDownWeight(e);
@@ -352,6 +363,7 @@ export default () => {
             <div>
               <small className="display-block">Reps</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setPullDownReps(e);
@@ -370,6 +382,7 @@ export default () => {
                 <b>Chest Press</b>
               </small>
               <Button
+                color="black"
                 fill={chestPressTime !== 0 && !isChestPressRunning}
                 outline={chestPressTime === 0 || isChestPressRunning}
                 round
@@ -401,6 +414,7 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setChestPressWeight(e);
@@ -414,6 +428,7 @@ export default () => {
             <div>
               <small className="display-block">Reps</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setChestPressReps(e);
@@ -432,6 +447,7 @@ export default () => {
                 <b>Leg Press</b>
               </small>
               <Button
+                color="black"
                 fill={legPressTime !== 0 && !isLegPressRunning}
                 outline={legPressTime === 0 || isLegPressRunning}
                 round
@@ -463,6 +479,7 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setLegPressWeight(e);
@@ -477,6 +494,7 @@ export default () => {
             <div>
               <small className="display-block">Reps</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setLegPressReps(e);
@@ -496,6 +514,7 @@ export default () => {
                 <b>Seated Row</b>
               </small>
               <Button
+                color="black"
                 fill={seatedRowTime !== 0 && !isSeatedRowRunning}
                 outline={seatedRowTime === 0 || isSeatedRowRunning}
                 round
@@ -527,6 +546,7 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setSeatedRowWeight(e);
@@ -540,6 +560,7 @@ export default () => {
             <div>
               <small className="display-block">Reps</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setSeatedRowReps(e);
@@ -558,6 +579,7 @@ export default () => {
                 <b>Overhead Press</b>
               </small>
               <Button
+                color="black"
                 fill={overheadPressTime !== 0 && !isOverheadPressRunning}
                 outline={overheadPressTime === 0 || isOverheadPressRunning}
                 round
@@ -583,6 +605,7 @@ export default () => {
             <div>
               <small className="display-block">Weight</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setOverheadPressWeight(e);
@@ -596,6 +619,7 @@ export default () => {
             <div>
               <small className="display-block">Reps</small>
               <Stepper
+                color="black"
                 smallIos
                 onStepperChange={(e) => {
                   setOverheadPressReps(e);
@@ -731,7 +755,7 @@ export default () => {
                       outline
                       round
                       small
-                      color="red"
+                      color="black"
                       onClick={() => {
                         f7.dialog.confirm(
                           "Are you sure you want to delete this entry?",
