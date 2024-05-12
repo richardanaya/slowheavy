@@ -8,6 +8,7 @@ import {
   Button,
   Stepper,
   Chip,
+  f7,
 } from "framework7-react";
 
 interface IWorkoutEntry {
@@ -259,19 +260,25 @@ export default () => {
               if (gymStartTime === undefined) {
                 setGymStartTime(new Date());
               } else {
-                if (currentEntry) {
-                  // save to exercise_log array in localStorage
-                  const exerciseLog = JSON.parse(
-                    localStorage.getItem("exercise_log") || "[]"
-                  );
-                  exerciseLog.push(currentEntry);
-                  localStorage.setItem(
-                    "exercise_log",
-                    JSON.stringify(exerciseLog)
-                  );
-                  setLog(exerciseLog);
-                  setGymStartTime(undefined);
-                }
+                f7.dialog.confirm(
+                  "Are you sure you want to end the workout?",
+                  "End Workout",
+                  () => {
+                    if (currentEntry) {
+                      // save to exercise_log array in localStorage
+                      const exerciseLog = JSON.parse(
+                        localStorage.getItem("exercise_log") || "[]"
+                      );
+                      exerciseLog.push(currentEntry);
+                      localStorage.setItem(
+                        "exercise_log",
+                        JSON.stringify(exerciseLog)
+                      );
+                      setLog(exerciseLog);
+                      setGymStartTime(undefined);
+                    }
+                  }
+                );
               }
             }}
             disabled={isCurrentlyExercising}
@@ -306,7 +313,13 @@ export default () => {
                 round
                 onClick={() => {
                   if (pullDownTime > 0 && !isPullDownRunning) {
-                    setPullDownTime(0);
+                    f7.dialog.confirm(
+                      "Are you sure you want to reset the Pulldown timer?",
+                      "Reset Timer",
+                      () => {
+                        setPullDownTime(0);
+                      }
+                    );
                   } else {
                     setIsPullDownRunning(!isPullDownRunning);
                   }
@@ -362,7 +375,13 @@ export default () => {
                 round
                 onClick={() => {
                   if (chestPressTime > 0 && !isChestPressRunning) {
-                    setChestPressTime(0);
+                    f7.dialog.confirm(
+                      "Are you sure you want to reset the Chest Press timer?",
+                      "Reset Timer",
+                      () => {
+                        setChestPressTime(0);
+                      }
+                    );
                   } else {
                     setIsChestPressRunning(!isChestPressRunning);
                   }
@@ -418,7 +437,13 @@ export default () => {
                 round
                 onClick={() => {
                   if (legPressTime > 0 && !isLegPressRunning) {
-                    setLegPressTime(0);
+                    f7.dialog.confirm(
+                      "Are you sure you want to reset the Leg Press timer?",
+                      "Reset Timer",
+                      () => {
+                        setLegPressTime(0);
+                      }
+                    );
                   } else {
                     setIsLegPressRunning(!isLegPressRunning);
                   }
@@ -476,7 +501,13 @@ export default () => {
                 round
                 onClick={() => {
                   if (seatedRowTime > 0 && !isSeatedRowRunning) {
-                    setSeatedRowTime(0);
+                    f7.dialog.confirm(
+                      "Are you sure you want to reset the Seated Row timer?",
+                      "Reset Timer",
+                      () => {
+                        setSeatedRowTime(0);
+                      }
+                    );
                   } else {
                     setIsSeatedRowRunning(!isSeatedRowRunning);
                   }
@@ -702,14 +733,20 @@ export default () => {
                       small
                       color="red"
                       onClick={() => {
-                        const newLog = log.filter(
-                          (_: IWorkoutEntry, j: number) => i !== j
+                        f7.dialog.confirm(
+                          "Are you sure you want to delete this entry?",
+                          "Delete Entry",
+                          () => {
+                            const newLog = log.filter(
+                              (_: IWorkoutEntry, j: number) => i !== j
+                            );
+                            localStorage.setItem(
+                              "exercise_log",
+                              JSON.stringify(newLog)
+                            );
+                            setLog(newLog);
+                          }
                         );
-                        localStorage.setItem(
-                          "exercise_log",
-                          JSON.stringify(newLog)
-                        );
-                        setLog(newLog);
                       }}
                     >
                       Delete
