@@ -250,15 +250,6 @@ export default () => {
   return (
     <App>
       <Page>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-        >
-          <img src="./slowheavy.png" width="90%" />
-        </div>
         <Block strong outlineIos>
           <Button
             fill
