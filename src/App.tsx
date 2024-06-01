@@ -355,7 +355,7 @@ export default () => {
                 onStepperChange={(e) => {
                   setPullDownReps(e);
                 }}
-                step={0.5}
+                step={1}
                 value={pullDownReps}
                 max={999}
                 min={0}
@@ -417,7 +417,7 @@ export default () => {
                 onStepperChange={(e) => {
                   setChestPressReps(e);
                 }}
-                step={0.5}
+                step={1}
                 value={chestPressReps}
                 max={999}
                 min={0}
@@ -481,7 +481,7 @@ export default () => {
                   setLegPressReps(e);
                   localStorage.setItem("last_leg_press_reps", e.target.value);
                 }}
-                step={0.5}
+                step={1}
                 value={legPressReps}
                 max={999}
                 min={0}
@@ -543,7 +543,7 @@ export default () => {
                 onStepperChange={(e) => {
                   setSeatedRowReps(e);
                 }}
-                step={0.5}
+                step={1}
                 max={999}
                 min={0}
                 value={seatedRowReps}
@@ -601,7 +601,7 @@ export default () => {
                 }}
                 max={999}
                 min={0}
-                step={0.5}
+                step={1}
                 value={overheadPressReps}
               />
             </div>
