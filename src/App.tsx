@@ -117,6 +117,9 @@ export default () => {
   );
 
   const formatSeconds = (seconds: number) => {
+    if (seconds < 0) {
+      return "Starting in " + -seconds + " sec";
+    }
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes} min ${remainingSeconds} sec`;
@@ -320,6 +323,9 @@ export default () => {
                       }
                     );
                   } else {
+                    if (!isPullDownRunning) {
+                      setPullDownTime(-5);
+                    }
                     setIsPullDownRunning(!isPullDownRunning);
                   }
                 }}
@@ -382,6 +388,9 @@ export default () => {
                       }
                     );
                   } else {
+                    if (!isChestPressRunning) {
+                      setChestPressTime(-5);
+                    }
                     setIsChestPressRunning(!isChestPressRunning);
                   }
                 }}
@@ -444,6 +453,9 @@ export default () => {
                       }
                     );
                   } else {
+                    if (!isLegPressRunning) {
+                      setLegPressTime(-5);
+                    }
                     setIsLegPressRunning(!isLegPressRunning);
                   }
                 }}
@@ -508,6 +520,9 @@ export default () => {
                       }
                     );
                   } else {
+                    if (!isSeatedRowRunning) {
+                      setSeatedRowTime(-5);
+                    }
                     setIsSeatedRowRunning(!isSeatedRowRunning);
                   }
                 }}
@@ -564,6 +579,9 @@ export default () => {
                   if (overheadPressTime > 0 && !isOverheadPressRunning) {
                     setOverheadPressTime(0);
                   } else {
+                    if (!isOverheadPressRunning) {
+                      setOverheadPressTime(-5);
+                    }
                     setIsOverheadPressRunning(!isOverheadPressRunning);
                   }
                 }}
